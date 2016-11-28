@@ -7,7 +7,7 @@
 #define SEND_PIN 9
 
 // Максимальная длина последовательности комманд ИК-пульта
-#define IR_BUTTONS_COUNT 15
+#define IR_BUTTONS_COUNT 12
 // Максимальное количество таких последовательностей
 // Должно быть равно количеству кнопок в remoteXY
 #define MACROS_COUNT 5

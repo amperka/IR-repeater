@@ -69,29 +69,33 @@ void sendButton(byte button)
       // Подождём выполнения команды бытовыми приборами
       delay(1000);
       // если команда неизвестна — выходим из функции.
-    } else return;
+    } else {
+      return;
+    }
   }
 }
 
 // Функция для сохранения принятой ИК-команды
 // принимает на вход декодированную ИК-команду, номер текущей последовательности (т.е. номер нажатой кнопки)
 // и позицию команды в текущей последовательности
-void storeCode(decode_results *results, int buttonNumber, int pos)
+void storeCode(decode_results *results, int buttonNumber)
 {
   // Если позиция команды меньше, чем максимальное количество команд в последовательности
-  if (pos < IR_BUTTONS_COUNT) {
+  if (macroPos < IR_BUTTONS_COUNT) {
     // Если протокол команды известен, и это не команда повтора команды
     if ((results->decode_type != UNKNOWN) && (results->value != REPEAT)) {
       // Сохраняем команду в массив хранения последовательностей команд
-      irSygnals[buttonNumber][pos].decode_type = results->decode_type;
-      irSygnals[buttonNumber][pos].address = results->address;
-      irSygnals[buttonNumber][pos].value = results->value;
-      irSygnals[buttonNumber][pos].bits = results->bits;
+      irSygnals[buttonNumber][macroPos].decode_type = results->decode_type;
+      irSygnals[buttonNumber][macroPos].address = results->address;
+      irSygnals[buttonNumber][macroPos].value = results->value;
+      irSygnals[buttonNumber][macroPos].bits = results->bits;
+      //увеличиваем счётчик принятых комманд
+      macroPos += 1;
+       // Пометим следующую команду как неизвестную, чтобы
+      // остановится на этом месте в функции отправки последовательностей команд
+      if (macroPos < IR_BUTTONS_COUNT)
+        irSygnals[buttonNumber][macroPos].decode_type = UNKNOWN;
     }
   }
-  // Пометим следующую команду как неизвестную, чтобы
-  // остановится на этом месте в функции отправки последовательностей команд
-  if (pos < IR_BUTTONS_COUNT - 1)
-    irSygnals[buttonNumber][pos + 1].decode_type = UNKNOWN;
 }
 
